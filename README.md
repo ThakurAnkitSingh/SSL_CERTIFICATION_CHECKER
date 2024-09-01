@@ -1,35 +1,32 @@
-SSL Certificate Checker
-Overview
-The SSL Certificate Checker is a full-stack application that allows users to check the SSL certificate details of a given domain. It provides information on the certificate's validity status, expiration date, issuer, subject, and domain validity. The tool is designed to help users ensure their domains are secure and up-to-date with valid SSL certificates.
+# SSL Certificate Checker
 
-Features
-Check SSL Certificate: Enter a domain to get details about its SSL certificate.
-Display Information: See validity status, expiration date, issuer details, subject details, and domain validity.
-Error Handling: Handle incorrect domain inputs and display meaningful error messages.
-Technologies Used
-Frontend: React, CSS
-Backend: Node.js, Express, JavaScript, MVC, Rest APIs
+## Description
+This project provides a RESTful API to check SSL certificate details for a given domain. It verifies certificate validity, expiration, domain matching, and checks if the certificate chain can be trusted.
 
+## Setup and Run Instructions
 
-How It Works
-Enter Domain: Type a domain name into the input field and press Enter or click the "Check SSL" button.
-View Results: The application sends a request to the backend to fetch SSL certificate details.
-Display Information:
-Validity Status: Indicates if the certificate is valid or expired.
-Expiration Date: Shows the date when the certificate will expire.
-Issuer: Lists the issuer details of the certificate.
-Subject: Lists the subject details of the certificate.
-Domain Validity: Checks if the certificate is valid for the entered domain.
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/ThakurAnkitSingh/SSL-Certification-Checker.git
+   cd SSL-Certification-Checker
 
-Correct Response
+2. Install Dependencies: Make sure you have Node.js installed. Then, install the project dependencies:
+   npm install
+3. Start the Server: Run the server with:
+   npm start
+
+The server will be running at http://localhost:3000.
+
+4. Test the API: Use an API client like Postman or curl to test the endpoint:
+
+Endpoint: POST http://localhost:3000/v1/ssl/check
+Request Body:
 {
-  "validityStatus": "Valid",
-  "expirationDate": "2024-10-28T06:37:25.000Z",
-  "issuer": "Google Trust Services",
-  "subject": "*.google.com",
-  "domainValidity": "Valid",
-  "isTrusted": true
+  "domain": "example.com"
 }
-Wrong Response - Enter the Domain Name, or Unaccepted error occuring in SSL Certification - if the certification wrong.
 
-Feel free to submit issues or pull requests to improve the project. Your contributions are welcome!
+Technology Choices
+Node.js: Chosen for its non-blocking I/O model, which is well-suited for handling multiple simultaneous network requests.
+HTTPS Module: Used to fetch SSL certificates directly from the server.
+Express.js (if used in your setup): A minimal and flexible Node.js web application framework.
+
