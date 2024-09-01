@@ -13,7 +13,7 @@ function App() {
                 setError("Please type the Domain");
                 return;
             }       
-            const response = await axios.post('http://localhost:3000/v1/ssl/check', {
+            const response = await axios.post('https://ssl-certification-checker-backend.onrender.com/v1/ssl/check', {
                 domain: domain
             });
             console.log(response, "Response of the SSL Certificate");
