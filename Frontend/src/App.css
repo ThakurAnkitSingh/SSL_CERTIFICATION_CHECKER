@@ -1,0 +1,115 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+
+.domain-input {
+  width: 90%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+
+.read-the-docs {
+  color: #888;
+}
+
+
+button {
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  color: red;
+  margin-top: 20px;
+}
+
+.result-container {
+  background-color: #333; /* Background color to make the text pop */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.result-container h2 {
+  color: #d20e0e;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.result-section {
+  margin-bottom: 15px;
+}
+
+.result-section h3 {
+  color: rgb(147, 106, 106); /* Heading text color */
+  margin-bottom: 5px;
+  border-radius: 4px;
+  display: flex;
+}
+
+.result-section p {
+  color: #f4f4f4; /* Response text color */
+  font-size: 16px;
+  margin: 0;
+}
+
+.result-section ul {
+  padding-left: 20px;
+  color: #f4f4f4; /* List text color */
+}
