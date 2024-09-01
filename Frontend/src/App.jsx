@@ -20,8 +20,7 @@ function App() {
             setResult(response.data);
             setError('');
         } catch (err) {
-            console.log(err);
-            setError('An error occurred while checking the SSL certificate.');
+            setError(`An error occurred while checking the SSL certificate, ${err?.response?.data?.error}`);
             setResult(null);
         }
     };

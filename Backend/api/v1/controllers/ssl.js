@@ -28,14 +28,14 @@ const checkSSL = async (req, res) => {
         expirationDate: cert.valid_to,
         issuer: cert.issuer,
         subject: cert.subject,
-        domainValidity: (cert.subject.CN === '*.google.com' || cert.subject.CN === domain) ? 'Valid' : 'Invalid',
+        domainValidity: (cert.subject.CN === `*.${domain}` || cert.subject.CN === domain) ? 'Valid' : 'Invalid',
       };
 
       res.json(certificateInfo);
     });
 
     req.on('error', (e) => {
-      res.status(500).json({ error: `Request failed: ${e.message}` });
+      res.status(500).json({ error: `Request failed: Not Found Domain` });
     });
 
     req.end();
