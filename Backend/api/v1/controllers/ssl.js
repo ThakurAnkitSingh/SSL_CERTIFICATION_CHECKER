@@ -1,48 +1,98 @@
 const https = require('https');
+const { exec } = require('child_process');
 
 const checkSSL = async (req, res) => {
   const { domain } = req.body;
 
   try {
     const options = {
-      method: 'GET',
-      host: domain,
+      host: new URL(domain).hostname,
       port: 443,
-      path: '/',
-      agent: false,
+      method: 'GET',
       rejectUnauthorized: false,
     };
 
     const req = https.request(options, (response) => {
-      const cert = response.socket.getPeerCertificate();
+      const certificate = response.socket.getPeerCertificate(true);
 
-      if (!cert || Object.keys(cert).length === 0) {
-        return res.status(400).json({ error: 'No certificate found' });
+      if (!certificate || Object.keys(certificate).length === 0) {
+        return res.status(400).json({ error: 'No certificate found or certificate is invalid.' });
       }
 
-      const expirationDate = new Date(cert.valid_to);
-      const isExpired = expirationDate < new Date();
+      // Extract metadata
+      const subject = certificate.subject;
+      const issuer = certificate.issuer;
+      const validFrom = certificate.valid_from;
+      const validTo = certificate.valid_to;
+      const serialNumber = certificate.serialNumber;
+      const ocspUrl = certificate.ocsp_url
 
-      const certificateInfo = {
-        validityStatus: isExpired ? 'Expired' : 'Valid',
-        expirationDate: cert.valid_to,
-        issuer: cert.issuer,
-        subject: cert.subject,
-        domainValidity: (cert.subject.CN === `*.${domain}` || cert.subject.CN === domain) ? 'Valid' : 'Invalid',
-      };
+      // Validate expiry date
+      const now = new Date();
+      const isCurrentlyValid = now >= new Date(validFrom) && now <= new Date(validTo) ? "True" : "False";
 
-      res.json(certificateInfo);
+      // Validate certificate chain
+      const isValidChain = response.socket.authorized;
+
+      // Verify that the certificate is valid for the input domain
+      const validForDomain = subject.CN === options.host ? "True" : "False";
+
+      if (ocspUrl) {
+        // Check if the certificate has been revoked using OCSP
+        const ocspCommand = `openssl ocsp -issuer ${issuer.CN} -serial ${serialNumber} -url ${ocspUrl} -CAfile /etc/ssl/certs/ca-certificates.crt`;
+
+        exec(ocspCommand, (error, stdout, stderr) => {
+          if (error) {
+            return res.status(500).json({ error: 'Error checking certificate revocation status.' });
+          }
+
+          const isRevoked = stdout.includes('revoked');
+
+          res.json({
+            url: domain,
+            tlsVersion: response.socket.getProtocol() || 'Unknown TLS Version',
+            certificate: {
+              subject,
+              issuer,
+              validFrom,
+              validTo,
+              serialNumber,
+              validForDomain,
+              isCurrentlyValid,
+              isValidChain,
+              isRevoked,
+            },
+          });
+        });
+      } else {
+        res.json({
+          url: domain,
+          tlsVersion: response.socket.getProtocol() || 'Unknown TLS Version',
+          certificate: {
+            subject,
+            issuer,
+            validFrom,
+            validTo,
+            serialNumber,
+            validForDomain,
+            isCurrentlyValid,
+            isValidChain,
+            isRevoked: 'OCSP URL not available',
+          },
+        });
+      }
     });
 
-    req.on('error', (e) => {
-      res.status(500).json({ error: `Request failed: Not Found Domain` });
+    req.on('error', (err) => {
+      res.status(500).json({ error: `Error checking SSL` });
     });
 
     req.end();
-  } catch (error) {
-    res.status(500).json({ error: 'An error occurred while checking the SSL certificate' });
+  } catch (err) {
+    res.status(500).json({ error: 'Invalid URL or server error' });
   }
-};
+}
+
 
 module.exports = {
   checkSSL

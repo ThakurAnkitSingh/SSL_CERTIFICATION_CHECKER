@@ -17,7 +17,7 @@ function App() {
                 domain: domain
             });
             console.log(response, "Response of the SSL Certificate");
-            setResult(response.data);
+            setResult(response.data.certificate);
             setError('');
         } catch (err) {
             setError(`An error occurred while checking the SSL certificate, ${err?.response?.data?.error}`);
@@ -47,11 +47,11 @@ function App() {
                     <h2>Certificate Details</h2>
                     <div className="result-section">
                         <h3>Validity Status</h3>
-                        <p>{result.validityStatus}</p>
+                        <p>{result.isCurrentlyValid}</p>
                     </div>
                     <div className="result-section">
                         <h3>Expiration Date</h3>
-                        <p>{new Date(result.expirationDate).toLocaleString()}</p>
+                        <p>{new Date(result.validTo).toLocaleString()}</p>
                     </div>
                     <div className="result-section">
                         <h3>Issuer</h3>
@@ -63,7 +63,7 @@ function App() {
                     </div>
                     <div className="result-section">
                         <h3>Domain Validity</h3>
-                        <p>{result.domainValidity}</p>
+                        <p>{result.validForDomain}</p>
                     </div>
                 </div>
             )}
